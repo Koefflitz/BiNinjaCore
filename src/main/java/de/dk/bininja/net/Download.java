@@ -1,5 +1,8 @@
 package de.dk.bininja.net;
 
+import static de.dk.bininja.net.DownloadState.CANCELLED;
+import static de.dk.bininja.net.DownloadState.COMPLETE;
+import static de.dk.bininja.net.DownloadState.ERROR;
 import static de.dk.bininja.net.DownloadState.INITIALIZING;
 
 import java.net.URLConnection;
@@ -19,6 +22,8 @@ public abstract class Download extends Thread implements ChannelListener<Downloa
 
    private DownloadState state;
    protected DownloadListenerChain listeners = new DownloadListenerChain();
+
+   private final Object mutex = new Object();
 
    protected long length = -1;
    private long loadedBytes;
@@ -72,6 +77,15 @@ public abstract class Download extends Thread implements ChannelListener<Downloa
       }
    }
 
+   public void waitFor() throws InterruptedException {
+      synchronized (mutex) {
+         if (getDownloadState() == CANCELLED || getDownloadState() == ERROR || getDownloadState() == COMPLETE)
+            return;
+
+         mutex.wait();
+      }
+   }
+
    protected abstract void request(DownloadRequestPacket packet);
    protected abstract void header(DownloadHeaderPacket packet);
    protected abstract void ready(DownloadReadyPacket packet);
@@ -108,7 +122,8 @@ public abstract class Download extends Thread implements ChannelListener<Downloa
    }
 
    public void addListener(DownloadListener listener) {
-      listeners.add(listener);
+      if (listener != null)
+         listeners.add(listener);
    }
 
    public void removeListener(DownloadListener listener) {
@@ -120,7 +135,11 @@ public abstract class Download extends Thread implements ChannelListener<Downloa
    }
 
    protected void setState(DownloadState state) {
-      this.state = state;
+      synchronized (mutex) {
+         this.state = state;
+         if (state == CANCELLED || state == ERROR || state == COMPLETE)
+            mutex.notify();
+      }
       if (listeners != null)
          listeners.stateChanged(state);
    }

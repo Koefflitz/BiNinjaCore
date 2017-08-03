@@ -14,6 +14,11 @@ public class DownloadManager<D extends Download> implements Iterable<D> {
 
    }
 
+   public void waitFor() throws InterruptedException {
+      for (D download : downloads)
+         download.waitFor();
+   }
+
    public void add(D download) {
       downloads.add(download);
       download.addListener(new DownloadListenerAdapter(download));

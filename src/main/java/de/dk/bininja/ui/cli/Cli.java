@@ -19,9 +19,9 @@ public class Cli<C extends CliController> {
    private static final String HELP = "help";
    private static final String SHORT_HELP = "h";
 
-   private final BufferedReader in;
-   private final C controller;
-   private final Collection<CliCommand<? super C>> commands;
+   protected final BufferedReader in;
+   protected final C controller;
+   protected final Collection<CliCommand<? super C>> commands;
    private long readInterval = DEFAULT_READ_INTERVAL;
    private Thread runningThread;
 
@@ -33,6 +33,7 @@ public class Cli<C extends CliController> {
 
    public Cli(C controller,
               Collection<CliCommand<? super C>> commands,
+              BufferedReader in,
               String promptConnected,
               String promptNotConnected) {
 
@@ -40,7 +41,19 @@ public class Cli<C extends CliController> {
       this.commands = Objects.requireNonNull(commands);
       this.promptConnected = promptConnected;
       this.promptNotConnected = promptNotConnected;
-      this.in = new BufferedReader(new InputStreamReader(System.in));
+      this.in = in;
+   }
+
+   public Cli(C controller,
+              Collection<CliCommand<? super C>> commands,
+              String promptConnected,
+              String promptNotConnected) {
+
+      this(controller,
+           commands,
+           new BufferedReader(new InputStreamReader(System.in)),
+           promptConnected,
+           promptNotConnected);
    }
 
    public Cli(C controller, Collection<CliCommand<? super C>> commands) {
@@ -135,7 +148,7 @@ public class Cli<C extends CliController> {
       return true;
    }
 
-   private String prompt() throws IOException, InterruptedException {
+   public String prompt() throws IOException, InterruptedException {
       System.out.print(connected ? promptConnected : promptNotConnected);
       while (!in.ready())
          Thread.sleep(readInterval);
@@ -147,7 +160,7 @@ public class Cli<C extends CliController> {
       return input.trim();
    }
 
-   private String caughtPrompt() throws IOException, InterruptedException {
+   public String caughtPrompt() throws IOException, InterruptedException {
       try {
          return prompt();
       } catch (IOException | InterruptedException e) {
@@ -185,12 +198,18 @@ public class Cli<C extends CliController> {
       }
    }
 
-   public void showMessage(String msg) {
-      System.out.println(msg);
+   public void show(String format, Object... args) {
+      System.out.printf(format, args);
    }
 
-   public void showError(String msg) {
-      System.err.println(msg);
+   public void showError(String errorMsg, Object... args) {
+      System.err.printf(errorMsg, args);
+   }
+
+   public void close() {
+      LOGGER.debug("Closing the cli.");
+      running = false;
+      runningThread.interrupt();
    }
 
    public long getReadInterval() {
@@ -223,11 +242,5 @@ public class Cli<C extends CliController> {
 
    public boolean isRunning() {
       return running;
-   }
-
-   public void close() {
-      LOGGER.debug("Closing the cli.");
-      running = false;
-      runningThread.interrupt();
    }
 }
