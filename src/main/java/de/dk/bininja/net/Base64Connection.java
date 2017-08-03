@@ -106,5 +106,4 @@ public class Base64Connection extends Connection {
       if (length != buffer.length)
          this.buffer = new byte[length];
    }
-
 }

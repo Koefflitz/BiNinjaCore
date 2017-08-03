@@ -22,6 +22,7 @@ public class AdminPacket extends BiNinjaPacket {
 
    public static enum AdminPacketType {
       COUNT_CONNECTIONS,
+      CONNECTION_DETAILS,
       SET_BUFFER_SIZE,
       READ_BUFFER_SIZE,
       SHUTDOWN;
