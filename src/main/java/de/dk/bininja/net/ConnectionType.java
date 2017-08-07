@@ -1,5 +1,9 @@
 package de.dk.bininja.net;
 
+/**
+ * @author David Koettlitz
+ * <br>Erstellt am 07.08.2017
+ */
 public enum ConnectionType {
    CLIENT("client", "download client"),
    ADMIN("admin", "admin client"),

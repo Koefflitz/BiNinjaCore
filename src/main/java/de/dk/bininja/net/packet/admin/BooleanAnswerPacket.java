@@ -1,5 +1,9 @@
 package de.dk.bininja.net.packet.admin;
 
+/**
+ * @author David Koettlitz
+ * <br>Erstellt am 07.08.2017
+ */
 public class BooleanAnswerPacket extends AdminPacket {
    private static final long serialVersionUID = 1447039253552730600L;
 

@@ -2,6 +2,10 @@ package de.dk.bininja.net.packet.download;
 
 import static de.dk.bininja.net.packet.download.DownloadPacket.DownloadPacketType.HEADER;
 
+/**
+ * @author David Koettlitz
+ * <br>Erstellt am 07.08.2017
+ */
 public class DownloadHeaderPacket extends DownloadPacket {
    private static final long serialVersionUID = -3678424741415605265L;
 

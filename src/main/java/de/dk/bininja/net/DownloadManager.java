@@ -7,6 +7,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author David Koettlitz
+ * <br>Erstellt am 07.08.2017
+ */
 public class DownloadManager<D extends Download> implements Iterable<D> {
    private final List<D> downloads = new LinkedList<>();
 

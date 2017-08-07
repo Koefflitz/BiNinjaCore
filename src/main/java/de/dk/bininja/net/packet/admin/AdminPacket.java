@@ -2,6 +2,10 @@ package de.dk.bininja.net.packet.admin;
 
 import de.dk.bininja.net.packet.BiNinjaPacket;
 
+/**
+ * @author David Koettlitz
+ * <br>Erstellt am 07.08.2017
+ */
 public class AdminPacket extends BiNinjaPacket {
    private static final long serialVersionUID = 7186280991000983529L;
 

@@ -1,5 +1,9 @@
 package de.dk.bininja.net.packet.admin;
 
+/**
+ * @author David Koettlitz
+ * <br>Erstellt am 07.08.2017
+ */
 public class SetBufferSizePacket extends AdminPacket {
    private static final long serialVersionUID = -6071414974784315881L;
 

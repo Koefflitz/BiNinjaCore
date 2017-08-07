@@ -4,6 +4,10 @@ import static de.dk.bininja.net.packet.download.DownloadPacket.DownloadPacketTyp
 
 import java.net.URL;
 
+/**
+ * @author David Koettlitz
+ * <br>Erstellt am 07.08.2017
+ */
 public class DownloadRequestPacket extends DownloadPacket {
    private static final long serialVersionUID = 5145983506127775440L;
 

@@ -2,6 +2,10 @@ package de.dk.bininja.net;
 
 import java.io.Serializable;
 
+/**
+ * @author David Koettlitz
+ * <br>Erstellt am 07.08.2017
+ */
 public class ConnectionDetails implements Serializable {
    private static final long serialVersionUID = -66870433382761578L;
 

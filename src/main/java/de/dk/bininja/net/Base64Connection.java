@@ -14,6 +14,10 @@ import de.dk.util.net.Connection;
 import de.dk.util.net.ReadingException;
 import de.dk.util.net.Receiver;
 
+/**
+ * @author David Koettlitz
+ * <br>Erstellt am 07.08.2017
+ */
 public class Base64Connection extends Connection {
    public static final char MSG_DELIMITER = '.';
    public static final byte[] MSG_DELIMITER_AS_BYTEARRAY = ("" + MSG_DELIMITER).getBytes();

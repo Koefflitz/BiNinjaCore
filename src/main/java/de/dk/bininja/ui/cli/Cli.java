@@ -12,6 +12,10 @@ import org.slf4j.LoggerFactory;
 import de.dk.bininja.net.Base64Connection;
 import de.dk.util.StringUtils;
 
+/**
+ * @author David Koettlitz
+ * <br>Erstellt am 07.08.2017
+ */
 public class Cli<C extends CliController> {
    private static final Logger LOGGER = LoggerFactory.getLogger(Cli.class);
 

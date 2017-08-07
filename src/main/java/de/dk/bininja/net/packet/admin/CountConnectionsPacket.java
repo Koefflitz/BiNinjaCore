@@ -2,6 +2,10 @@ package de.dk.bininja.net.packet.admin;
 
 import de.dk.bininja.net.ConnectionType;
 
+/**
+ * @author David Koettlitz
+ * <br>Erstellt am 07.08.2017
+ */
 public class CountConnectionsPacket extends AdminPacket {
    private static final long serialVersionUID = -3040126379611584743L;
 

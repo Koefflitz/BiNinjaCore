@@ -2,6 +2,10 @@ package de.dk.bininja.net;
 
 import java.util.ArrayList;
 
+/**
+ * @author David Koettlitz
+ * <br>Erstellt am 07.08.2017
+ */
 public interface DownloadListener {
    public void stateChanged(DownloadState state);
    public void loadProgress(double progress, long receivedBytes, long total);
