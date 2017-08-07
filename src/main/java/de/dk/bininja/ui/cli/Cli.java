@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.dk.bininja.net.Base64Connection;
+import de.dk.bininja.net.ConnectionRefusedException;
 import de.dk.util.StringUtils;
 
 /**
@@ -98,20 +99,38 @@ public class Cli<C extends CliController> {
             break;
          }
 
-         if (isHelp(input)) {
-            printHelp();
-            continue;
-         }
-         CliCommand<? super C> cmd = parse(input);
-         if (cmd == null) {
-            System.out.println("Command " + input + " not found.");
-            System.out.println("Type h or help to get some help.");
-            continue;
-         }
-
-         handle(cmd, input);
+         enter(input);
       }
       System.out.println("BiNinja admintool out.");
+   }
+
+   public void enter(String input) {
+      if (isHelp(input)) {
+         printHelp();
+         return;
+      }
+      CliCommand<? super C> cmd = parse(input);
+      if (cmd == null) {
+         System.out.println("Command " + input + " not found.");
+         System.out.println("Type h or help to get some help.");
+         return;
+      }
+      CliCommandResult result;
+      try {
+         result = cmd.execute(input, controller);
+      } catch (IOException e) {
+         System.err.println("Error executing command " + input);
+         e.printStackTrace(System.err);
+         return;
+      } catch (InterruptedException e) {
+         return;
+      }
+
+      if (result.getMessage() != null) {
+         System.out.println(result.getMessage());
+         if (!result.worked())
+            cmd.printUsage();
+      }
    }
 
    private boolean connect() {
@@ -144,7 +163,7 @@ public class Cli<C extends CliController> {
       }
       try {
          controller.connect(host, port);
-      } catch (IOException e) {
+      } catch (IOException | ConnectionRefusedException e) {
          System.out.println("Could not connect to " + host + ":" + port);
          System.out.println(e.getMessage());
          return false;
@@ -177,23 +196,6 @@ public class Cli<C extends CliController> {
       }
    }
 
-   private void handle(CliCommand<? super C> cmd, String input) {
-      CliCommandResult result;
-      try {
-         result = cmd.execute(input, controller);
-      } catch (IOException e) {
-         System.err.println("Error executing command " + input);
-         e.printStackTrace(System.err);
-         return;
-      } catch (InterruptedException e) {
-         return;
-      }
-
-      System.out.println(result.getMessage());
-      if (!result.worked())
-         cmd.printUsage();
-   }
-
    private void printHelp() {
       System.out.println("This tool expects one of the following commands:");
       for (CliCommand<? super C> cmd : commands) {
@@ -203,17 +205,18 @@ public class Cli<C extends CliController> {
    }
 
    public void show(String format, Object... args) {
-      System.out.printf(format, args);
+      System.out.printf(format + "\n", args);
    }
 
    public void showError(String errorMsg, Object... args) {
-      System.err.printf(errorMsg, args);
+      System.err.printf(errorMsg + "\n", args);
    }
 
    public void close() {
       LOGGER.debug("Closing the cli.");
       running = false;
-      runningThread.interrupt();
+      if (runningThread != null && runningThread != Thread.currentThread())
+         runningThread.interrupt();
    }
 
    public long getReadInterval() {
