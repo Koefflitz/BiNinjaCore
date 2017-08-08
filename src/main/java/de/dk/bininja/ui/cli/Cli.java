@@ -131,6 +131,12 @@ public class Cli<C extends CliController> {
          if (!result.worked())
             cmd.printUsage();
       }
+
+      try {
+         result.waitFor();
+      } catch (InterruptedException e) {
+         LOGGER.warn("Interrpted while waiting for command " + cmd.getName(), e);
+      }
    }
 
    private boolean connect() {
@@ -179,6 +185,21 @@ public class Cli<C extends CliController> {
       String input = in.readLine();
       if (input == null)
          throw new IOException("End of stream has been reached.");
+
+      return input.trim();
+   }
+
+   public String prompt(String msg, boolean qToQuit) throws IOException, InterruptedException {
+      System.out.print(msg + (qToQuit ? " (q to quit): " : ""));
+      while (!in.ready())
+         Thread.sleep(readInterval);
+
+      String input = in.readLine();
+      if (input == null)
+         throw new IOException("End of stream has been reached.");
+
+      if (qToQuit && (input.equals("q") || input.equals("quit")))
+         return null;
 
       return input.trim();
    }

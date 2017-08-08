@@ -28,6 +28,8 @@ public class DownloadHeaderPacket extends DownloadPacket {
 
    @Override
    public String toString() {
-      return String.format("DownloadHeaderPacket { length=%s }", length);
+      return String.format("DownloadHeaderPacket { length=%s, filename=%s }",
+                           length,
+                           filename != null ? filename : "not set");
    }
 }

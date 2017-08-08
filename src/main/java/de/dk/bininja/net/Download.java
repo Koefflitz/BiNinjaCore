@@ -14,7 +14,6 @@ import de.dk.bininja.net.packet.download.DownloadHeaderPacket;
 import de.dk.bininja.net.packet.download.DownloadPacket;
 import de.dk.bininja.net.packet.download.DownloadReadyPacket;
 import de.dk.bininja.net.packet.download.DownloadRequestPacket;
-import de.dk.util.StringUtils;
 import de.dk.util.channel.ChannelListener;
 
 public abstract class Download extends Thread implements ChannelListener<DownloadPacket> {
@@ -36,11 +35,11 @@ public abstract class Download extends Thread implements ChannelListener<Downloa
    public static String getFilename(URLConnection connection) throws NoSuchFieldException {
       String filenameIndicator = "filename=";
       String rawValue = connection.getHeaderField(URL_HEADER_FIELD_FILENAME);
-      if (StringUtils.isBlank(rawValue) || !rawValue.contains(filenameIndicator)) {
-         String msg = "The url doesn't give information about the filename."
-                    + String.format("The value of the headerfield \"%s\" was \"%s\"",
-                                    URL_HEADER_FIELD_FILENAME,
-                                    rawValue);
+      if (rawValue == null || !rawValue.contains(filenameIndicator)) {
+         String msg = "The url doesn't provide information about the filename."
+                      + String.format("The value of the headerfield \"%s\" was \"%s\"",
+                      URL_HEADER_FIELD_FILENAME,
+                      rawValue);
          throw new NoSuchFieldException(msg);
       }
 
