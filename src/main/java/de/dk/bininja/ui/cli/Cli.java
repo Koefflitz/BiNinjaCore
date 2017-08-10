@@ -177,16 +177,16 @@ public class Cli<C extends CliController> {
       return true;
    }
 
+   protected void connected() {
+
+   }
+
+   protected void disconnected() {
+      System.out.print("\r" + promptNotConnected);
+   }
+
    public String prompt() throws IOException, InterruptedException {
-      System.out.print(connected ? promptConnected : promptNotConnected);
-      while (!in.ready())
-         Thread.sleep(readInterval);
-
-      String input = in.readLine();
-      if (input == null)
-         throw new IOException("End of stream has been reached.");
-
-      return input.trim();
+      return prompt(connected ? promptConnected : promptNotConnected, false);
    }
 
    public String prompt(String msg, boolean qToQuit) throws IOException, InterruptedException {
@@ -265,7 +265,14 @@ public class Cli<C extends CliController> {
    }
 
    public void setConnected(boolean connected) {
+      if (connected == this.connected)
+         return;
+
       this.connected = connected;
+      if (connected)
+         connected();
+      else
+         disconnected();
    }
 
    public boolean isRunning() {
