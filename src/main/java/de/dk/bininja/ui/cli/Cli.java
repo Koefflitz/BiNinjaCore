@@ -118,10 +118,6 @@ public class Cli<C extends CliController> {
       CliCommandResult result;
       try {
          result = cmd.execute(input, controller);
-      } catch (IOException e) {
-         System.err.println("Error executing command " + input);
-         e.printStackTrace(System.err);
-         return;
       } catch (InterruptedException e) {
          return;
       }
@@ -141,18 +137,21 @@ public class Cli<C extends CliController> {
 
    private boolean connect() {
       System.out.println("Not connected. Starting connect procedure.");
-      System.out.println("Please enter the host to connect to");
       String host;
       try {
-         host = caughtPrompt();
+         host = caughtPrompt("Please enter the host to connect to", true);
+         if (host == null)
+            return false;
       } catch (IOException | InterruptedException e) {
          return false;
       }
 
-      System.out.println("Now enter a port (or just enter for default port " + Base64Connection.PORT + "): ");
       String portString;
       try {
-         portString = caughtPrompt();
+         String prompt = "Now enter a port (or just enter for default port " + Base64Connection.PORT + ")";
+         portString = caughtPrompt(prompt, true);
+         if (portString == null)
+            return false;
       } catch (IOException | InterruptedException e) {
          return false;
       }
@@ -204,13 +203,14 @@ public class Cli<C extends CliController> {
       return input.trim();
    }
 
-   public String caughtPrompt() throws IOException, InterruptedException {
+   public String caughtPrompt(String msg, boolean qToQuit) throws IOException, InterruptedException {
       try {
-         return prompt();
+         return prompt(msg, qToQuit);
       } catch (IOException | InterruptedException e) {
          if (running) {
-            System.err.println("Input was closed unexpectedly... ");
-            e.printStackTrace(System.err);
+            String errorMsg = "Input was closed unexpectedly... ";
+            System.err.println(errorMsg);
+            LOGGER.error(errorMsg, e);
             running = false;
          }
          throw e;

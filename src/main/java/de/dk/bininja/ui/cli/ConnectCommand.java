@@ -36,8 +36,7 @@ public class ConnectCommand extends CliCommand<CliController> {
    }
 
    @Override
-   protected CliCommandResult execute(String input, CliController controller) throws IOException,
-                                                                                     InterruptedException {
+   protected CliCommandResult execute(String input, CliController controller) throws InterruptedException {
       String[] tokens = input.split("\\s+");
       if (tokens.length < 1)
          return new CliCommandResult(false, "No arguments specified.");
@@ -67,6 +66,8 @@ public class ConnectCommand extends CliCommand<CliController> {
       } catch (ConnectionRefusedException e) {
          String msg = "The server refused the conntection request." + e.getMessage() == null ? "" : ("" + e.getMessage());
          return new CliCommandResult(true, msg);
+      } catch (IOException e) {
+         return new CliCommandResult(true, "Could not connect to " + host + ".\n" + e.getMessage());
       }
    }
 

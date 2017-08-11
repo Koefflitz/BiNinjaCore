@@ -1,7 +1,5 @@
 package de.dk.bininja.ui.cli;
 
-import java.io.IOException;
-
 public abstract class CliCommand<C> {
    protected final String name;
 
@@ -9,7 +7,7 @@ public abstract class CliCommand<C> {
       this.name = name;
    }
 
-   protected abstract CliCommandResult execute(String input, C controller) throws IOException, InterruptedException;
+   protected abstract CliCommandResult execute(String input, C controller) throws InterruptedException;
    public abstract void printUsage();
 
    public String getName() {
