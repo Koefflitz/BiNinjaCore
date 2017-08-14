@@ -76,6 +76,6 @@ public class ConnectionDetails implements Serializable {
 
    @Override
    public String toString() {
-      return type + " connection to " + host + "@" + port;
+      return type + " connection to " + host + ":" + port;
    }
 }
