@@ -31,7 +31,7 @@ public class Packer {
       this.decoder = Objects.requireNonNull(decoder);
    }
 
-   public String pack(byte[] content) throws IOException {
+   public byte[] pack(byte[] content) throws IOException {
       deflater.setInput(content);
       deflater.finish();
       ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -41,13 +41,13 @@ public class Packer {
          outStream.write(buffer, 0, deflatedBytes);
       }
       deflater.reset();
-      return encoder.encodeToString(outStream.toByteArray());
+      return encoder.encode(outStream.toByteArray());
    }
 
-   public byte[] unpack(String content) throws UnpackException {
+   public byte[] unpack(byte[] content) throws UnpackException {
       byte[] bytes;
       try {
-         bytes = decoder.decode(content.getBytes());
+         bytes = decoder.decode(content);
       } catch (IllegalArgumentException e) {
          throw new UnpackException(e);
       }

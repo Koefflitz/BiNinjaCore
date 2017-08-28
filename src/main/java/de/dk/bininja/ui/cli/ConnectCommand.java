@@ -43,7 +43,7 @@ public class ConnectCommand extends CliCommand<CliController> {
 
       ArgumentModel parsedArgs;
       try {
-         parsedArgs = PARSER.parseArguments(1, tokens.length - 1, tokens);
+         parsedArgs = PARSER.parseArguments(1, tokens);
       } catch (ArgumentParseException e) {
          return new CliCommandResult(false, e.getMessage());
       }
