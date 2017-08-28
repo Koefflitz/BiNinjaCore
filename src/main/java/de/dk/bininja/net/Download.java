@@ -28,6 +28,11 @@ public abstract class Download extends Thread implements ChannelListener<Downloa
    private long loadedBytes;
    private long writtenBytes;
 
+   private long startTime = -1;
+   private long lastReceiveTime = -1;
+   private int firstByteCount = -1;
+   private float loadSpeed;
+
    public Download() {
       setState(INITIALIZING);
    }
@@ -103,7 +108,7 @@ public abstract class Download extends Thread implements ChannelListener<Downloa
    protected void received(int byteCount) {
       loadedBytes += byteCount;
       if (listeners != null)
-         listeners.loadProgress(1d * loadedBytes / length, loadedBytes, length);
+         listeners.loadProgress(1d * loadedBytes / length, loadedBytes, length, updateSpeed(byteCount));
    }
 
    protected long getWrittenBytes() {
@@ -114,6 +119,18 @@ public abstract class Download extends Thread implements ChannelListener<Downloa
       writtenBytes += byteCount;
       if (listeners != null)
          listeners.writeProgress(1d * writtenBytes / length, writtenBytes, length);
+   }
+
+   private float updateSpeed(int byteCount) {
+      long now = System.currentTimeMillis();
+      if (startTime == -1) {
+         startTime = now;
+         firstByteCount = byteCount;
+      } else {
+         loadSpeed = byteCount * 1000f / (now - lastReceiveTime);
+      }
+      lastReceiveTime = now;
+      return loadSpeed;
    }
 
    public double getProgress() {
@@ -129,18 +146,25 @@ public abstract class Download extends Thread implements ChannelListener<Downloa
       listeners.remove(listener);
    }
 
+   public float getLoadSpeed() {
+      return loadSpeed;
+   }
+
    public DownloadState getDownloadState() {
       return state;
    }
 
    protected void setState(DownloadState state) {
+      if (state == COMPLETE)
+         loadSpeed = 1000f * (loadedBytes - firstByteCount) / (System.currentTimeMillis() - startTime);
+
       synchronized (mutex) {
          this.state = state;
          if (state == CANCELLED || state == ERROR || state == COMPLETE)
             mutex.notify();
       }
       if (listeners != null)
-         listeners.stateChanged(state);
+         listeners.stateChanged(state, this);
    }
 
    @Override

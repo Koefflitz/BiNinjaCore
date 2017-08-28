@@ -25,7 +25,7 @@ public class DownloadManager<D extends Download> implements Iterable<D> {
 
    public void add(D download) {
       downloads.add(download);
-      download.addListener(new DownloadListenerAdapter(download));
+      download.addListener(new DownloadListenerAdapter());
    }
 
    public int size() {
@@ -38,20 +38,15 @@ public class DownloadManager<D extends Download> implements Iterable<D> {
    }
 
    private class DownloadListenerAdapter implements DownloadListener {
-      private Download download;
-
-      public DownloadListenerAdapter(Download download) {
-         this.download = download;
-      }
 
       @Override
-      public void stateChanged(DownloadState state) {
+      public void stateChanged(DownloadState state, Download download) {
          if (state != RUNNING && state != INITIALIZING)
             downloads.remove(download);
       }
 
       @Override
-      public void loadProgress(double progress, long receivedBytes, long total) {}
+      public void loadProgress(double progress, long receivedBytes, long total, float loadSpeed) {}
 
       @Override
       public void writeProgress(double progress, long writtenBytes, long total) {}
