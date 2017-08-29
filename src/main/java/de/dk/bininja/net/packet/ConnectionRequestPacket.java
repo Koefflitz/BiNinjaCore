@@ -31,7 +31,7 @@ public class ConnectionRequestPacket extends BiNinjaPacket {
    @Override
    public String toString() {
       return "ConnectionRequestPacket { "
-             + "connectionType=" + (connectionType == null ? "not set" : connectionType.getString()) + ", "
+             + "connectionType=" + (connectionType == null ? "<not set>" : connectionType.getString()) + ", "
              + "secure=" + secure
              + " }";
    }
