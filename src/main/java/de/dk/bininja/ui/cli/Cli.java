@@ -105,6 +105,8 @@ public class Cli<C extends CliController> {
    }
 
    public void enter(String input) {
+      LOGGER.debug("Processing input: \"" + input + "\"");
+
       if (isHelp(input)) {
          printHelp();
          return;
@@ -122,11 +124,11 @@ public class Cli<C extends CliController> {
          return;
       }
 
-      if (result.getMessage() != null) {
+      if (result.getMessage() != null)
          System.out.println(result.getMessage());
-         if (!result.worked())
-            cmd.printUsage();
-      }
+
+      if (!result.wasCommandCorrect())
+         cmd.printUsage();
 
       try {
          result.waitFor();

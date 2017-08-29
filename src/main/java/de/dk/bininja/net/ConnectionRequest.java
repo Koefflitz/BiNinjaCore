@@ -44,29 +44,37 @@ public class ConnectionRequest implements Receiver {
       Base64Connection connection = new Base64Connection(host, port);
 
       if (isSecure()) {
-         connection.send(new ConnectionRequestPacket(true));
+         ConnectionRequestPacket packet = new ConnectionRequestPacket(true);
+         LOGGER.debug("Sending " + packet + " to request a secure connection");
+         connection.send(packet);
+         LOGGER.debug("Arranging the session key.");
          SessionKeyArrangement builder = new SessionKeyArrangement(connection, connection.getObjectOutput());
          SecretKey sessionKey = sessionKeyBuilder.buildSessionKey(builder);
          if (sessionKey != null) {
             try {
                connection.appendCoder(new CipherCoderAdapter(sessionKey));
             } catch (NullPointerException | GeneralSecurityException e) {
+               LOGGER.error("The could not create coder with the sessionKey: " + sessionKey);
                close(connection);
                throw new IOException("Could not create coder.", e);
             }
+            LOGGER.debug("Session key arranged.");
          }
       }
 
       connection.addReceiver(this);
       connection.start();
 
+      LOGGER.debug("Telling the server, that I am the admin tool.");
       synchronized (mutex) {
          try {
             connection.send(new ConnectionRequestPacket(type));
          } catch (IOException e) {
-           close(connection);
-           throw e;
+            LOGGER.error("Could not tell the server who I am.", e);
+            close(connection);
+            throw e;
          }
+         LOGGER.debug("Waiting for an answer from the server...");
          mutex.wait(timeout);
       }
 
@@ -76,6 +84,7 @@ public class ConnectionRequest implements Receiver {
          close(connection);
          throw new IOException("The connection request timed out.");
       }
+
       if (!answer.isAccept()) {
          close(connection);
          throw new ConnectionRefusedException(answer.getMsg());
@@ -89,8 +98,12 @@ public class ConnectionRequest implements Receiver {
       try {
          this.answer = (ConnectionAnswerPacket) msg;
       } catch (ClassCastException e) {
-         throw new IllegalArgumentException("Expecting a ConnectionAnswerPacket but received something else: " + msg, e);
+         String errorMsg = "Expecting a ConnectionAnswerPacket but received something else: " + msg;
+         throw new IllegalArgumentException(errorMsg, e);
       }
+
+      LOGGER.debug("Received an answer from the server: " + answer);
+
       synchronized (mutex) {
          mutex.notify();
       }
@@ -109,6 +122,7 @@ public class ConnectionRequest implements Receiver {
    }
 
    private void close(Connection c) {
+      LOGGER.debug("Closing the connection to " + c.getInetAddress());
       c.removeReceiver(this);
       try {
          c.close();

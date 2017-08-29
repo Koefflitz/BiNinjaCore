@@ -30,6 +30,6 @@ public class BooleanAnswerPacket extends AdminPacket {
 
    @Override
    public String toString() {
-      return "BooleanAnswerPacket {result=" + result + " }";
+      return "BooleanAnswerPacket { result=" + result + " }";
    }
 }

@@ -5,24 +5,24 @@ package de.dk.bininja.ui.cli;
  * <br>Erstellt am 07.08.2017
  */
 public class CliCommandResult {
-   private final boolean worked;
+   private final boolean commandCorrect;
    private final String message;
    private boolean block;
    private long timeout;
 
-   public CliCommandResult(boolean worked, String message, boolean block, long timeout) {
-      this.worked = worked;
+   public CliCommandResult(boolean commandCorrect, String message, boolean block, long timeout) {
+      this.commandCorrect = commandCorrect;
       this.message = message;
       this.block = block;
       this.timeout = timeout;
    }
 
-   public CliCommandResult(boolean worked, String message, boolean block) {
-      this(worked, message, block, 0);
+   public CliCommandResult(boolean commandCorrect, String message, boolean block) {
+      this(commandCorrect, message, block, 0);
    }
 
-   public CliCommandResult(boolean worked, String message) {
-      this(worked, message, false);
+   public CliCommandResult(boolean commandCorrect, String message) {
+      this(commandCorrect, message, false);
    }
 
    public void waitFor() throws InterruptedException {
@@ -47,7 +47,7 @@ public class CliCommandResult {
       return message;
    }
 
-   public boolean worked() {
-      return worked;
+   public boolean wasCommandCorrect() {
+      return commandCorrect;
    }
 }
