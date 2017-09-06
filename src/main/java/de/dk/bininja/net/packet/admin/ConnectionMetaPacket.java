@@ -2,26 +2,26 @@ package de.dk.bininja.net.packet.admin;
 
 import java.util.Collection;
 
-import de.dk.bininja.net.ConnectionDetails;
+import de.dk.bininja.net.ConnectionMetadata;
 import de.dk.bininja.net.ConnectionType;
 
 /**
  * @author David Koettlitz
  * <br>Erstellt am 07.08.2017
  */
-public class ConnectionDetailsPacket extends AdminPacket {
+public class ConnectionMetaPacket extends AdminPacket {
    private static final long serialVersionUID = -3698121898801236246L;
 
    private final ConnectionType connectionType;
-   private Collection<ConnectionDetails> connectionDetails;
+   private Collection<ConnectionMetadata> connectionDetails;
 
-   public ConnectionDetailsPacket(ConnectionType connectionType, Collection<ConnectionDetails> connectionDetails) {
+   public ConnectionMetaPacket(ConnectionType connectionType, Collection<ConnectionMetadata> connectionDetails) {
       super(AdminPacketType.CONNECTION_DETAILS);
       this.connectionType = connectionType;
       this.connectionDetails = connectionDetails;
    }
 
-   public ConnectionDetailsPacket(ConnectionType connectionType) {
+   public ConnectionMetaPacket(ConnectionType connectionType) {
       this(connectionType, null);
    }
 
@@ -29,17 +29,17 @@ public class ConnectionDetailsPacket extends AdminPacket {
       return connectionType;
    }
 
-   public Collection<ConnectionDetails> getConnectionDetails() {
+   public Collection<ConnectionMetadata> getConnectionDetails() {
       return connectionDetails;
    }
 
-   public void setConnectionDetails(Collection<ConnectionDetails> connectionDetails) {
+   public void setConnectionMeta(Collection<ConnectionMetadata> connectionDetails) {
       this.connectionDetails = connectionDetails;
    }
 
    @Override
    public String toString() {
-      return "ConnectionDetailsPacket { connectionType=" + connectionType
+      return "ConnectionMetaPacket { connectionType=" + connectionType
                                         + ", connectionDetails=" + connectionDetails + " }";
    }
 }

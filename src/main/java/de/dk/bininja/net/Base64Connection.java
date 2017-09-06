@@ -32,8 +32,12 @@ public class Base64Connection extends Connection {
    private final Packer packer = new Packer();
    private final Serializer serializer = new SimpleSerializer();
    private final Deque<Coder> coders = new LinkedList<>();
+
    private byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
    private String stringBuffer = "";
+
+   private long bytesSend;
+   private long bytesReceived;
 
    public Base64Connection(Socket socket, Receiver receiver) throws IOException {
       super(socket, receiver);
@@ -64,6 +68,7 @@ public class Base64Connection extends Connection {
 
    public void sendRaw(byte[] data) throws IOException {
       synchronized (out) {
+         bytesSend += data.length + MSG_DELIMITER_AS_BYTEARRAY.length;
          out.write(data);
          out.write(MSG_DELIMITER_AS_BYTEARRAY);
          out.flush();
@@ -89,6 +94,7 @@ public class Base64Connection extends Connection {
          if (readBytes == -1)
             break;
 
+         bytesReceived += readBytes;
          stringBuffer += new String(buffer, 0, readBytes);
       }
       return null;
@@ -162,6 +168,14 @@ public class Base64Connection extends Connection {
     */
    public void removeCoder(Coder coder) {
       coders.remove(coder);
+   }
+
+   public long getBytesSent() {
+      return bytesSend;
+   }
+
+   public long getBytesReceived() {
+      return bytesReceived;
    }
 
    public ObjectInputStream getObjectOutput() {

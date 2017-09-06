@@ -107,8 +107,11 @@ public abstract class Download extends Thread implements ChannelListener<Downloa
 
    protected void received(int byteCount) {
       loadedBytes += byteCount;
-      if (listeners != null)
-         listeners.loadProgress(1d * loadedBytes / length, loadedBytes, length, updateSpeed(byteCount));
+      if (listeners != null) {
+         listeners.loadProgress(1d * loadedBytes / length,
+                                loadedBytes, length,
+                                updateSpeed(byteCount));
+      }
    }
 
    protected long getWrittenBytes() {
@@ -117,8 +120,11 @@ public abstract class Download extends Thread implements ChannelListener<Downloa
 
    protected void written(int byteCount) {
       writtenBytes += byteCount;
-      if (listeners != null)
-         listeners.writeProgress(1d * writtenBytes / length, writtenBytes, length);
+      if (listeners != null) {
+         listeners.writeProgress(1d * writtenBytes / length,
+                                 writtenBytes,
+                                 length);
+      }
    }
 
    private float updateSpeed(int byteCount) {
@@ -155,8 +161,10 @@ public abstract class Download extends Thread implements ChannelListener<Downloa
    }
 
    protected void setState(DownloadState state) {
-      if (state == COMPLETE)
-         loadSpeed = 1000f * (loadedBytes - firstByteCount) / (System.currentTimeMillis() - startTime);
+      if (state == COMPLETE) {
+         long delta = System.currentTimeMillis() - startTime;
+         loadSpeed = 1000f * (loadedBytes - firstByteCount) / delta;
+      }
 
       synchronized (mutex) {
          this.state = state;

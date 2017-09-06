@@ -11,7 +11,8 @@ public interface DownloadListener {
    public void loadProgress(double progress, long receivedBytes, long total, float speed);
    public void writeProgress(double progress, long writtenBytes, long total);
 
-   public static class DownloadListenerChain extends ArrayList<DownloadListener> implements DownloadListener {
+   public static class DownloadListenerChain extends ArrayList<DownloadListener>
+                                             implements DownloadListener {
       private static final long serialVersionUID = -6961295371791275802L;
 
       @Override
