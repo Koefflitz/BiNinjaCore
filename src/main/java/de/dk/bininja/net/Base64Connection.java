@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -23,11 +24,14 @@ import de.dk.util.net.Receiver;
  * <br>Erstellt am 07.08.2017
  */
 public class Base64Connection extends Connection {
+   private static final String ENCODING = "UTF-8";
+   private static final Charset CHARSET;
+
    public static final int PORT = 10000;
    public static final int DEFAULT_BUFFER_SIZE = 64000;
 
    public static final char MSG_DELIMITER = '.';
-   public static final byte[] MSG_DELIMITER_AS_BYTEARRAY = ("" + MSG_DELIMITER).getBytes();
+   public static final byte[] MSG_DELIMITER_AS_BYTEARRAY;
 
    private final Packer packer = new Packer();
    private final Serializer serializer = new SimpleSerializer();
@@ -38,6 +42,15 @@ public class Base64Connection extends Connection {
 
    private long bytesSend;
    private long bytesReceived;
+
+   static {
+      try {
+         CHARSET = Charset.forName(ENCODING);
+      } catch (IllegalArgumentException e) {
+         throw new Error("Encoding " + ENCODING + " not supported.", e);
+      }
+      MSG_DELIMITER_AS_BYTEARRAY = ("" + MSG_DELIMITER).getBytes(CHARSET);
+   }
 
    public Base64Connection(Socket socket, Receiver receiver) throws IOException {
       super(socket, receiver);
@@ -95,7 +108,7 @@ public class Base64Connection extends Connection {
             break;
 
          bytesReceived += readBytes;
-         stringBuffer += new String(buffer, 0, readBytes);
+         stringBuffer += new String(buffer, 0, readBytes, CHARSET);
       }
       return null;
    }
@@ -103,7 +116,7 @@ public class Base64Connection extends Connection {
    protected Object processReceivedMsg(String msg) throws ReadingException {
       byte[] unpacked;
       try {
-         unpacked = packer.unpack(msg.getBytes());
+         unpacked = packer.unpack(msg.getBytes(CHARSET));
       } catch (UnpackException e) {
          throw new ReadingException("Corrupt message received: " + msg, e);
       }
