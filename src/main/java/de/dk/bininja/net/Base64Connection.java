@@ -105,12 +105,12 @@ public class Base64Connection extends Connection {
          byte[] buffer = this.buffer;
          int readBytes = in.read(buffer);
          if (readBytes == -1)
-            break;
+            throw new IOException("EOS reached.");
 
          bytesReceived += readBytes;
          stringBuffer += new String(buffer, 0, readBytes, CHARSET);
       }
-      return null;
+      throw new IOException("The socket has been closed.");
    }
 
    protected Object processReceivedMsg(String msg) throws ReadingException {
