@@ -122,7 +122,7 @@ public class ConnectionRequest implements Receiver {
    }
 
    private void close(Connection c) {
-      LOGGER.debug("Closing the connection to " + c.getInetAddress());
+      LOGGER.debug("Closing the connection to " + c.getAddress());
       c.removeReceiver(this);
       try {
          c.close();

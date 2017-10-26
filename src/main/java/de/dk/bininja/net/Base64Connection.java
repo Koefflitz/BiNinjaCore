@@ -89,7 +89,7 @@ public class Base64Connection extends Connection {
    }
 
    @Override
-   public Object readObject() throws IOException, ReadingException {
+   public Object readObjectImpl() throws IOException, ReadingException {
       while (!socket.isClosed()) {
          int endIndex;
          if ((endIndex = stringBuffer.indexOf(MSG_DELIMITER)) != -1) {
