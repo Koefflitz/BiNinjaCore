@@ -12,12 +12,12 @@ import java.util.LinkedList;
 
 import de.dk.bininja.pack.Packer;
 import de.dk.bininja.pack.UnpackException;
+import de.dk.ch.Receiver;
 import de.dk.util.Serializer;
 import de.dk.util.SimpleSerializer;
 import de.dk.util.net.Coder;
 import de.dk.util.net.Connection;
 import de.dk.util.net.ReadingException;
-import de.dk.util.net.Receiver;
 
 /**
  * @author David Koettlitz

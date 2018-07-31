@@ -14,7 +14,7 @@ import de.dk.bininja.net.packet.download.DownloadHeaderPacket;
 import de.dk.bininja.net.packet.download.DownloadPacket;
 import de.dk.bininja.net.packet.download.DownloadReadyPacket;
 import de.dk.bininja.net.packet.download.DownloadRequestPacket;
-import de.dk.util.channel.ChannelListener;
+import de.dk.ch.ChannelListener;
 
 public abstract class Download extends Thread implements ChannelListener<DownloadPacket> {
    private static final String URL_HEADER_FIELD_FILENAME = "Content-Disposition";

@@ -1,6 +1,6 @@
 package de.dk.bininja;
 
-import de.dk.util.opt.ex.ArgumentParseException;
+import de.dk.opt.ex.ArgumentParseException;
 
 /**
  * @author David Koettlitz

@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import de.dk.bininja.net.packet.ConnectionAnswerPacket;
 import de.dk.bininja.net.packet.ConnectionRequestPacket;
+import de.dk.ch.Receiver;
 import de.dk.util.net.Connection;
-import de.dk.util.net.Receiver;
 import de.dk.util.net.security.CipherCoderAdapter;
 import de.dk.util.net.security.SessionKeyArrangement;
 

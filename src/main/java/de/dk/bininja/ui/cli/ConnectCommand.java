@@ -4,10 +4,10 @@ import java.io.IOException;
 
 import de.dk.bininja.net.Base64Connection;
 import de.dk.bininja.net.ConnectionRefusedException;
-import de.dk.util.opt.ArgumentModel;
-import de.dk.util.opt.ArgumentParser;
-import de.dk.util.opt.ArgumentParserBuilder;
-import de.dk.util.opt.ex.ArgumentParseException;
+import de.dk.opt.ArgumentModel;
+import de.dk.opt.ArgumentParser;
+import de.dk.opt.ArgumentParserBuilder;
+import de.dk.opt.ex.ArgumentParseException;
 
 public class ConnectCommand extends CliCommand<CliController> {
    private static final String NAME = "connect";
@@ -27,7 +27,7 @@ public class ConnectCommand extends CliCommand<CliController> {
    private static ArgumentParser buildParser() {
       return ArgumentParserBuilder.begin()
                                   .addArgument(ARG_HOST, ARG_HOST_DESCRIPTION)
-                                  .buildOption(OPT_KEY_PORT, OPT_LONGKEY_PORT)
+                                  .buildOption(OPT_KEY_PORT)
                                      .setLongKey(OPT_LONGKEY_PORT)
                                      .setDescription(OPT_PORT_DESCRIPTION)
                                      .setExpectsValue(true)
